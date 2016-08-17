@@ -1,0 +1,35 @@
+# Will emit stats from the haproxy socket "show stat" command for each
+# server component
+#
+# e.g.
+# http-FRONTEND-rate_max = 120
+# http-server1-qcur = 10
+#
+
+modules {
+  module {
+    name = "haproxy"
+    language = "python"
+
+    param stats_socket {
+      value = '/tmp/haproxy'
+    }
+  }
+}
+
+collection_group {
+    collect_every  = 20
+    time_threshold = 180
+
+    metric {
+       name_match = "haproxy-.*cur"
+       value_threshold = 10
+    }
+    metric {
+       name_match = "haproxy-.*rate"
+       value_threshold = 10
+    }
+    metric {
+       name_match = "haproxy-.*"
+    }
+}
